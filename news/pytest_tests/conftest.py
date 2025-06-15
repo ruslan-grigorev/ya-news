@@ -1,6 +1,7 @@
 import pytest
 
 from django.test.client import Client
+from django.utils import timezone
 
 from news.models import News, Comment
 
@@ -50,3 +51,29 @@ def comment(news, author):
 @pytest.fixture
 def id_for_args(comment):
     return (comment.id,)
+
+@pytest.fixture
+def news_for_home_page():
+    news_list = [
+        News(
+            title=f'Новость {index}',
+            text='Просто текст.',
+            date=timezone.now() - timezone.timedelta(days=index),
+        )
+        for index in range(11)
+    ]
+    return News.objects.bulk_create(news_list)
+
+@pytest.fixture
+def comments_for_detail_page(news, author):
+    now = timezone.now()
+    comments = [
+        Comment(
+            news=news,
+            author=author,
+            text=f'Комментарий {index}',
+            created=now + timezone.timedelta(days=index)
+        )
+        for index in range(10)
+    ]
+    return Comment.objects.bulk_create(comments)
