@@ -77,3 +77,9 @@ def comments_for_detail_page(news, author):
         for index in range(10)
     ]
     return Comment.objects.bulk_create(comments)
+
+@pytest.fixture
+def form_data():
+    return {
+        'text': 'Новый текст'
+    }
